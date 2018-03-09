@@ -152,13 +152,16 @@ class Wallet:
         if 'auto-remove' in cfg:
             cfg.pop('auto-remove')
 
+        _xtype = 'default'
+        _creds = {'key':''}
+
         try:
             await wallet.create_wallet(
                 pool_name=self.pool_name,
                 name=self.name,
-                xtype=None,
+                xtype=_xtype,
                 config=json.dumps(cfg) if cfg else None,
-                credentials=None)
+                credentials=json.dumps(_creds) if _creds else None)
             logger.info('Created wallet {} on handle {}'.format(self.name, self.handle))
         except IndyError as e:
             if e.error_code == ErrorCode.WalletAlreadyExistsError:
@@ -167,7 +170,7 @@ class Wallet:
                 logger.debug('Wallet.open: <!< indy error code {}'.format(self.e.error_code))
                 raise
 
-        self._handle = await wallet.open_wallet(self.name, json.dumps(cfg) if cfg else None, None)
+        self._handle = await wallet.open_wallet(self.name, json.dumps(cfg) if cfg else None, json.dumps(_creds) if _creds else None)
         logger.info('Opened wallet {} on handle {}'.format(self.name, self.handle))
 
         (self._did, self._verkey) = await did.create_and_store_my_did(  # apparently does no harm to overwrite it

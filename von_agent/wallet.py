@@ -27,7 +27,7 @@ class Wallet:
     Class encapsulating indy-sdk wallet.
     """
 
-    def __init__(self, pool_name: str, seed: str, name: str, cfg: dict = None) -> None:
+    def __init__(self, pool_name: str, seed: str, name: str, wallet_type: str = None, cfg: dict = None, creds: dict = None) -> None:
         """
         Initializer for wallet. Store input parameters and create wallet.
         Does not open until open() or __enter__().
@@ -43,9 +43,6 @@ class Wallet:
             }
         :param creds: wallet credentials dict, None for default
         """
-
-        wallet_type = 'default'
-        creds = {'key':''}
 
         logger = logging.getLogger(__name__)
         logger.debug('Wallet.__init__: >>> pool_name {}, seed [SEED], name {}, type{}, cfg {}, creds {}'.format(pool_name, name, wallet_type,cfg,creds))
